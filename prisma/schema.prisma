@@ -1,56 +1,1410 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/iee_db"
+  url      = "mysql://root:password@localhost:3306/portal_iee"
 }
 
-generator client {
-  provider        = "prisma-client-js"
+model afastamentos {
+  afastamento_id Int        @id @unique(map: "afastamento_id") @default(autoincrement())
+  associado_id   Int
+  data_inicial   DateTime?  @db.Date
+  data_final     DateTime?  @db.Date
+  motivo         String?    @db.Text
+  asaf_redacao   Int?
+  associados     associados @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "afastamentos_ibfk_1")
+
+  @@index([associado_id], map: "afastamentos_ibfk_1")
+  @@index([data_final], map: "data_final")
+  @@index([data_inicial], map: "data_inicial")
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  oauth_token_secret String?
-  oauth_token        String?
+model ajuda {
+  id      Int       @id @default(autoincrement()) @db.UnsignedInt
+  menu_id Int?      @db.UnsignedInt
+  nome    String?   @db.VarChar(255)
+  texto   String?   @db.Text
+  ordem   Int?      @default(1)
+  ativo   String?   @db.Char(1)
+  dtains  DateTime? @db.DateTime(0)
+  dtaalt  DateTime? @db.DateTime(0)
+  menus   menus?    @relation(fields: [menu_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_ajuda_menus")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@index([menu_id], map: "FK_filtros_menus")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model areaconhecimento {
+  id   Int     @id @default(autoincrement())
+  nome String? @db.VarChar(255)
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  sessions      Session[]
+model associados {
+  associado_id                                               Int                          @id @unique(map: "associado_id") @default(autoincrement())
+  fase_id                                                    Int?                         @db.UnsignedInt
+  estado_civil_id                                            Int?                         @db.UnsignedInt
+  capitulo_id                                                Int?
+  end_residencial_cidade_id                                  Int?
+  end_correspondencia_cidade_id                              Int?
+  nome                                                       String?                      @db.VarChar(255)
+  sexo                                                       String?                      @default("m") @db.Char(1)
+  foto                                                       String?                      @db.VarChar(255)
+  nome_indicado                                              String?                      @db.VarChar(255)
+  nome_mae                                                   String?                      @db.VarChar(255)
+  nome_pai                                                   String?                      @db.VarChar(255)
+  data_nascimento                                            DateTime?                    @db.Date
+  naturalidade                                               String?                      @db.VarChar(255)
+  cpf                                                        String?                      @db.VarChar(255)
+  rg                                                         String?                      @db.VarChar(255)
+  vincular_aos_contatos                                      Int?
+  atividades_esportivas                                      String?                      @db.VarChar(255)
+  end_residencial_logradouro                                 String?                      @db.VarChar(255)
+  end_residencial_numero                                     String?                      @db.VarChar(11)
+  end_residencial_complemento                                String?                      @db.VarChar(255)
+  end_residencial_bairro                                     String?                      @db.VarChar(255)
+  end_residencial_cep                                        String?                      @db.VarChar(255)
+  correspondencia_tipo                                       Int?
+  correspondencia_cpf_cnpj                                   String?                      @db.VarChar(20)
+  end_correspondencia_logradouro                             String?                      @db.VarChar(255)
+  end_correspondencia_numero                                 String?                      @db.VarChar(11)
+  end_correspondencia_complemento                            String?                      @db.VarChar(255)
+  end_correspondencia_bairro                                 String?                      @db.VarChar(255)
+  end_correspondencia_cep                                    String?                      @db.VarChar(12)
+  end_correspondencia_cuidados                               String?                      @db.VarChar(255)
+  status                                                     Int?                         @default(1)
+  login                                                      String?                      @db.VarChar(255)
+  senha                                                      String?                      @db.Text
+  bloquear_ata                                               Int?
+  associado_desde                                            DateTime?                    @db.Date
+  data_prospect                                              DateTime?                    @db.Date
+  data_efetivo_2                                             DateTime?                    @db.Date
+  data_efetivo_3                                             DateTime?                    @db.Date
+  data_efetivo_4                                             DateTime?                    @db.Date
+  data_honorario                                             DateTime?                    @db.Date
+  data_honorario_remido                                      DateTime?                    @db.Date
+  data_atualizacao                                           DateTime?                    @db.Date
+  dtaalt                                                     DateTime?                    @db.DateTime(0)
+  nivel_curso_1                                              Int?
+  nome_curso_1                                               String?                      @db.VarChar(255)
+  status_curso_1                                             Int?
+  nome_instituicao_1                                         String?                      @db.VarChar(255)
+  cidade_curso_1                                             String?                      @db.VarChar(255)
+  nivel_curso_2                                              Int?
+  nome_curso_2                                               String?                      @db.VarChar(255)
+  status_curso_2                                             Int?
+  nome_instituicao_2                                         String?                      @db.VarChar(255)
+  cidade_curso_2                                             String?                      @db.VarChar(255)
+  nome_empresa                                               String?                      @db.VarChar(255)
+  cnpj_empresa                                               String?                      @db.VarChar(255)
+  logradouro_empresa                                         String?                      @db.VarChar(255)
+  numero_empresa                                             String?                      @db.VarChar(11)
+  complemento_empresa                                        String?                      @db.VarChar(255)
+  bairro_empresa                                             String?                      @db.VarChar(255)
+  cep_empresa                                                String?                      @db.VarChar(255)
+  cidade_empresa_id                                          Int?
+  cuidados_empresa                                           String?                      @db.VarChar(255)
+  cargo_empresa                                              String?                      @db.VarChar(255)
+  tel_residencial                                            String?                      @db.VarChar(255)
+  tel_residencial_obs                                        String?                      @db.VarChar(255)
+  tel_residencial_visivel                                    Int?                         @default(1) @db.UnsignedInt
+  tel_comercial                                              String?                      @db.VarChar(255)
+  tel_comercial_obs                                          String?                      @db.VarChar(255)
+  tel_comercial_visivel                                      Int?                         @default(0) @db.UnsignedInt
+  tel_celular                                                String?                      @db.VarChar(255)
+  tel_celular_obs                                            String?                      @db.VarChar(255)
+  tel_celular_visivel                                        Int?                         @default(1) @db.UnsignedInt
+  fax                                                        String?                      @db.VarChar(255)
+  fax_obs                                                    String?                      @db.VarChar(255)
+  fax_visivel                                                Int?                         @default(1)
+  email                                                      String?                      @db.VarChar(255)
+  email_obs                                                  String?                      @db.VarChar(255)
+  email_visivel                                              Int?                         @default(1)
+  msn                                                        String?                      @db.VarChar(255)
+  msn_visivel                                                Int?                         @default(1)
+  skype                                                      String?                      @db.VarChar(255)
+  skype_visivel                                              Int?                         @default(1)
+  comunicadores_outros                                       String?                      @db.VarChar(255)
+  comunicadores_outros_visivel                               Int?                         @default(1)
+  linkedin                                                   String?                      @db.VarChar(255)
+  linkedin_visivel                                           Int?                         @default(1)
+  blog                                                       String?                      @db.VarChar(255)
+  blog_visivel                                               Int?                         @default(1)
+  midias_outros                                              String?                      @db.VarChar(255)
+  midias_outros_visivel                                      Int?                         @default(1)
+  empresas_anteriores                                        String?                      @db.Text
+  feitos                                                     String?                      @db.Text
+  participacao_eventos                                       String?                      @db.Text
+  expertise                                                  String?                      @db.Text
+  livros                                                     String?                      @db.Text
+  setor_empresa                                              String?                      @db.MediumText
+  resp_setor_empresa                                         String?                      @db.MediumText
+  envolvimento_empresa                                       String?                      @db.MediumText
+  resp_envolvimento_empresa                                  String?                      @db.MediumText
+  faturamento_empresa                                        String?                      @db.MediumText
+  funcionarios_empresa                                       Int?
+  antes_empresa                                              String?                      @db.MediumText
+  investiu_empresa                                           String?                      @db.MediumText
+  resp_investiu_empresa                                      String?                      @db.MediumText
+  mentor_empresa                                             String?                      @db.MediumText
+  resp_mentor_empresa                                        String?                      @db.MediumText
+  fundou_empresa                                             String?                      @db.MediumText
+  resp_fundou_empresa                                        String?                      @db.MediumText
+  instituicao_empresa                                        String?                      @db.MediumText
+  desinst_empresa                                            String?                      @db.MediumText
+  politico_empresa                                           String?                      @db.MediumText
+  resp_politico_empresa                                      String?                      @db.MediumText
+  cargopublico_empresa                                       String?                      @db.MediumText
+  resp_cargopublico_empresa                                  String?                      @db.MediumText
+  resp_periodocargopublico_empresa                           String?                      @db.MediumText
+  resp_motivosaida_empresa                                   String?                      @db.MediumText
+  outrocargo_empresa                                         String?                      @db.MediumText
+  resp_outrocargo_empresa                                    String?                      @db.MediumText
+  atividadesiee                                              String?                      @db.MediumText
+  ideiasprojetos                                             String?                      @db.MediumText
+  is_diretoria                                               Int?
+  capitulos                                                  capitulos?                   @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_3")
+  cidades_associados_end_correspondencia_cidade_idTocidades  cidades?                     @relation("associados_end_correspondencia_cidade_idTocidades", fields: [end_correspondencia_cidade_id], references: [cidade_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_5")
+  cidades_associados_end_residencial_cidade_idTocidades      cidades?                     @relation("associados_end_residencial_cidade_idTocidades", fields: [end_residencial_cidade_id], references: [cidade_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_4")
+  estados_civis                                              estados_civis?               @relation(fields: [estado_civil_id], references: [estado_civil_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_2")
+  fase                                                       fase?                        @relation(fields: [fase_id], references: [fase_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_1")
+  afastamentos                                               afastamentos[]
+  associados_eventos                                         associados_eventos[]
+  associados_premios                                         associados_premios[]
+  associados_requisitos                                      associados_requisitos[]
+  atividades                                                 atividades[]
+  atividades_semmoficicacao                                  atividades_semmoficicacao[]
+  contatos_grupos_email                                      contatos_grupos_email[]
+  eventos                                                    eventos[]
+  grupos_formacao_associadosTogrupos_formacao_associado_id   grupos_formacao[]            @relation("associadosTogrupos_formacao_associado_id")
+  grupos_formacao_associadosTogrupos_formacao_coordenador_id grupos_formacao[]            @relation("associadosTogrupos_formacao_coordenador_id")
+  grupos_formacao_associados                                 grupos_formacao_associados[]
+  materiais                                                  materiais[]
+  penalidades                                                penalidades[]
+  status_associadosTostatus                                  status[]
+
+  @@index([end_correspondencia_cidade_id], map: "end_correspondencia_cidade_id")
+  @@index([end_residencial_cidade_id], map: "end_residencial_cidade_id")
+  @@index([estado_civil_id], map: "estado_civil_id")
+  @@index([capitulo_id], map: "fk_capitulo")
+  @@index([fase_id], map: "fk_categorias")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model associados_copy {
+  associado_id                     Int
+  fase_id                          Int?      @db.UnsignedInt
+  estado_civil_id                  Int?      @db.UnsignedInt
+  capitulo_id                      Int?
+  end_residencial_cidade_id        Int?
+  end_correspondencia_cidade_id    Int?
+  nome                             String?   @db.VarChar(255)
+  sexo                             String?   @default("m") @db.Char(1)
+  foto                             String?   @db.VarChar(255)
+  nome_indicado                    String?   @db.VarChar(255)
+  nome_mae                         String?   @db.VarChar(255)
+  nome_pai                         String?   @db.VarChar(255)
+  data_nascimento                  DateTime? @db.Date
+  naturalidade                     String?   @db.VarChar(255)
+  cpf                              String?   @db.VarChar(255)
+  rg                               String?   @db.VarChar(255)
+  vincular_aos_contatos            Int?
+  atividades_esportivas            String?   @db.VarChar(255)
+  end_residencial_logradouro       String?   @db.VarChar(255)
+  end_residencial_numero           String?   @db.VarChar(11)
+  end_residencial_complemento      String?   @db.VarChar(255)
+  end_residencial_bairro           String?   @db.VarChar(255)
+  end_residencial_cep              String?   @db.VarChar(255)
+  correspondencia_tipo             Int?
+  correspondencia_cpf_cnpj         String?   @db.VarChar(20)
+  end_correspondencia_logradouro   String?   @db.VarChar(255)
+  end_correspondencia_numero       String?   @db.VarChar(11)
+  end_correspondencia_complemento  String?   @db.VarChar(255)
+  end_correspondencia_bairro       String?   @db.VarChar(255)
+  end_correspondencia_cep          String?   @db.VarChar(12)
+  end_correspondencia_cuidados     String?   @db.VarChar(255)
+  status                           Int?      @default(1)
+  login                            String?   @db.VarChar(255)
+  senha                            String?   @db.MediumText
+  bloquear_ata                     Int?
+  associado_desde                  DateTime? @db.Date
+  data_prospect                    DateTime? @db.Date
+  data_efetivo_2                   DateTime? @db.Date
+  data_efetivo_3                   DateTime? @db.Date
+  data_efetivo_4                   DateTime? @db.Date
+  data_honorario                   DateTime? @db.Date
+  data_honorario_remido            DateTime? @db.Date
+  data_atualizacao                 DateTime? @db.Date
+  dtaalt                           DateTime? @db.DateTime(0)
+  nivel_curso_1                    Int?
+  nome_curso_1                     String?   @db.VarChar(255)
+  status_curso_1                   Int?
+  nome_instituicao_1               String?   @db.VarChar(255)
+  cidade_curso_1                   String?   @db.VarChar(255)
+  nivel_curso_2                    Int?
+  nome_curso_2                     String?   @db.VarChar(255)
+  status_curso_2                   Int?
+  nome_instituicao_2               String?   @db.VarChar(255)
+  cidade_curso_2                   String?   @db.VarChar(255)
+  nome_empresa                     String?   @db.VarChar(255)
+  cnpj_empresa                     String?   @db.VarChar(255)
+  logradouro_empresa               String?   @db.VarChar(255)
+  numero_empresa                   String?   @db.VarChar(11)
+  complemento_empresa              String?   @db.VarChar(255)
+  bairro_empresa                   String?   @db.VarChar(255)
+  cep_empresa                      String?   @db.VarChar(255)
+  cidade_empresa_id                Int?
+  cuidados_empresa                 String?   @db.VarChar(255)
+  cargo_empresa                    String?   @db.VarChar(255)
+  tel_residencial                  String?   @db.VarChar(255)
+  tel_residencial_obs              String?   @db.VarChar(255)
+  tel_residencial_visivel          Int?      @default(1) @db.UnsignedInt
+  tel_comercial                    String?   @db.VarChar(255)
+  tel_comercial_obs                String?   @db.VarChar(255)
+  tel_comercial_visivel            Int?      @default(0) @db.UnsignedInt
+  tel_celular                      String?   @db.VarChar(255)
+  tel_celular_obs                  String?   @db.VarChar(255)
+  tel_celular_visivel              Int?      @default(1) @db.UnsignedInt
+  fax                              String?   @db.VarChar(255)
+  fax_obs                          String?   @db.VarChar(255)
+  fax_visivel                      Int?      @default(1)
+  email                            String?   @db.VarChar(255)
+  email_obs                        String?   @db.VarChar(255)
+  email_visivel                    Int?      @default(1)
+  msn                              String?   @db.VarChar(255)
+  msn_visivel                      Int?      @default(1)
+  skype                            String?   @db.VarChar(255)
+  skype_visivel                    Int?      @default(1)
+  comunicadores_outros             String?   @db.VarChar(255)
+  comunicadores_outros_visivel     Int?      @default(1)
+  linkedin                         String?   @db.VarChar(255)
+  linkedin_visivel                 Int?      @default(1)
+  blog                             String?   @db.VarChar(255)
+  blog_visivel                     Int?      @default(1)
+  midias_outros                    String?   @db.VarChar(255)
+  midias_outros_visivel            Int?      @default(1)
+  empresas_anteriores              String?   @db.MediumText
+  feitos                           String?   @db.MediumText
+  participacao_eventos             String?   @db.MediumText
+  expertise                        String?   @db.MediumText
+  livros                           String?   @db.MediumText
+  setor_empresa                    String?   @db.MediumText
+  resp_setor_empresa               String?   @db.MediumText
+  envolvimento_empresa             String?   @db.MediumText
+  resp_envolvimento_empresa        String?   @db.MediumText
+  faturamento_empresa              String?   @db.MediumText
+  funcionarios_empresa             String?   @db.MediumText
+  antes_empresa                    String?   @db.MediumText
+  investiu_empresa                 String?   @db.MediumText
+  resp_investiu_empresa            String?   @db.MediumText
+  mentor_empresa                   String?   @db.MediumText
+  resp_mentor_empresa              String?   @db.MediumText
+  fundou_empresa                   String?   @db.MediumText
+  resp_fundou_empresa              String?   @db.MediumText
+  instituicao_empresa              String?   @db.MediumText
+  desinst_empresa                  String?   @db.MediumText
+  politico_empresa                 String?   @db.MediumText
+  resp_politico_empresa            String?   @db.MediumText
+  cargopublico_empresa             String?   @db.MediumText
+  resp_cargopublico_empresa        String?   @db.MediumText
+  resp_periodocargopublico_empresa String?   @db.MediumText
+  resp_motivosaida_empresa         String?   @db.MediumText
+  outrocargo_empresa               String?   @db.MediumText
+  resp_outrocargo_empresa          String?   @db.MediumText
+  is_diretoria                     Int?
 
-  @@unique([identifier, token])
+  @@ignore
+}
+
+model associados_eventos {
+  associado_evento_id Int        @id @unique(map: "associado_evento_id") @default(autoincrement()) @db.UnsignedInt
+  fase_id             Int?       @db.UnsignedInt
+  associado_id        Int
+  evento_id           Int
+  presenca_confirmada Int?       @default(0) @db.UnsignedInt
+  presente            Int?       @default(0) @db.UnsignedInt
+  pontuar             Int?       @default(0) @db.UnsignedInt
+  data                DateTime?  @default(now()) @db.Timestamp(0)
+  old_pontos          Int?
+  pontos              Int?
+  associados          associados @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "associados_eventos_ibfk_1")
+  eventos             eventos    @relation(fields: [evento_id], references: [evento_id], onDelete: Cascade, map: "associados_eventos_ibfk_3")
+  fase                fase?      @relation(fields: [fase_id], references: [fase_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_eventos_ibfk_2")
+
+  @@unique([associado_id, evento_id], map: "associado_id")
+  @@index([fase_id], map: "fase_id")
+  @@index([associado_id], map: "fk_evento_participantes_associado")
+  @@index([evento_id], map: "fk_evento_participantes_evento")
+}
+
+model associados_premios {
+  associado_premio_id Int        @id @default(autoincrement()) @db.UnsignedInt
+  associado_id        Int
+  premio_id           Int        @db.UnsignedInt
+  status              Int?       @db.UnsignedInt
+  data                DateTime   @db.Date
+  dtains              DateTime   @db.DateTime(0)
+  dtaalt              DateTime   @db.DateTime(0)
+  usuarios_id         Int
+  associados          associados @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "associados_premios_ibfk_1")
+  premios             premios    @relation(fields: [premio_id], references: [premio_id], onDelete: Cascade, map: "associados_premios_ibfk_2")
+
+  @@index([associado_id], map: "associado_id")
+  @@index([premio_id], map: "premio_id")
+}
+
+model associados_requisitos {
+  associado_requisito_id Int         @id @unique(map: "associado_requisito_id") @default(autoincrement())
+  associado_id           Int?
+  requisito_id           Int?
+  data                   DateTime?   @default(now()) @db.Timestamp(0)
+  status                 Int?
+  associados             associados? @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "associados_requisitos_ibfk_1")
+  requisitos             requisitos? @relation(fields: [requisito_id], references: [requisito_id], onDelete: Cascade, map: "associados_requisitos_ibfk_2")
+
+  @@index([associado_id], map: "associado_id")
+  @@index([requisito_id], map: "requisito_id")
+}
+
+model associados_status {
+  id   Int     @id @db.UnsignedInt
+  nome String? @db.VarChar(255)
+}
+
+model atividades {
+  atividade_id      Int              @id @unique(map: "atividade_id") @default(autoincrement())
+  associado_id      Int
+  atividade_tipo_id Int              @db.UnsignedInt
+  entrega_id        Int?             @db.UnsignedInt
+  participacao_id   Int?             @db.UnsignedInt
+  data              DateTime?        @db.DateTime(0)
+  pontuacao         Int?
+  descricao         String?          @db.Text
+  status            Int?             @default(0)
+  data_aux          DateTime?        @db.DateTime(0)
+  associados        associados       @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "atividades_ibfk_1")
+  atividades_tipos  atividades_tipos @relation(fields: [atividade_tipo_id], references: [atividade_tipo_id], onDelete: Cascade, map: "atividades_ibfk_2")
+
+  @@index([data], map: "data")
+  @@index([associado_id], map: "fk_atividade_associado")
+  @@index([atividade_tipo_id], map: "fk_atividade_tipo_atividade")
+}
+
+model atividades_semmoficicacao {
+  atividade_id      Int              @id @unique(map: "atividade_id") @default(autoincrement())
+  associado_id      Int
+  atividade_tipo_id Int              @db.UnsignedInt
+  data              DateTime?        @db.DateTime(0)
+  pontuacao         Int?
+  descricao         String?          @db.Text
+  status            Int?             @default(0)
+  data_aux          DateTime?        @db.DateTime(0)
+  associados        associados       @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "atividades_semmoficicacao_ibfk_1")
+  atividades_tipos  atividades_tipos @relation(fields: [atividade_tipo_id], references: [atividade_tipo_id], onDelete: Cascade, map: "atividades_semmoficicacao_ibfk_2")
+  materiais         materiais[]
+
+  @@index([data], map: "data")
+  @@index([associado_id], map: "fk_atividade_associado")
+  @@index([atividade_tipo_id], map: "fk_atividade_tipo_atividade")
+}
+
+model atividades_tipos {
+  atividade_tipo_id           Int                           @id @unique(map: "fk_id") @default(autoincrement()) @db.UnsignedInt
+  capitulo_id                 Int
+  nome                        String                        @db.VarChar(100)
+  pontos                      Int?                          @db.UnsignedInt
+  data                        DateTime                      @default(now()) @db.Timestamp(0)
+  capitulos                   capitulos                     @relation(fields: [capitulo_id], references: [capitulo_id], onUpdate: Restrict, map: "atividades_tipos_ibfk_1")
+  atividades                  atividades[]
+  atividades_semmoficicacao   atividades_semmoficicacao[]
+  atividades_tipos_requisitos atividades_tipos_requisitos[]
+
+  @@index([capitulo_id], map: "capitulo_id")
+}
+
+model atividades_tipos_copy {
+  atividade_tipo_id Int       @id @unique(map: "fk_id") @default(autoincrement()) @db.UnsignedInt
+  capitulo_id       Int
+  nome              String    @db.VarChar(100)
+  pontos            Int?      @db.UnsignedInt
+  data              DateTime  @default(now()) @db.Timestamp(0)
+  capitulos         capitulos @relation(fields: [capitulo_id], references: [capitulo_id], onUpdate: Restrict, map: "atividades_tipos_copy_ibfk_1")
+
+  @@index([capitulo_id], map: "capitulo_id")
+}
+
+model atividades_tipos_requisitos {
+  atividade_tipo_requisito_id Int              @id @unique(map: "atividade_tipo_requisito_id") @default(autoincrement()) @db.UnsignedInt
+  atividade_tipo_id           Int              @db.UnsignedInt
+  requisito_id                Int
+  data                        DateTime         @default(now()) @db.Timestamp(0)
+  atividades_tipos            atividades_tipos @relation(fields: [atividade_tipo_id], references: [atividade_tipo_id], onDelete: Cascade, map: "atividades_tipos_requisitos_ibfk_1")
+  requisitos                  requisitos       @relation(fields: [requisito_id], references: [requisito_id], onDelete: Cascade, map: "atividades_tipos_requisitos_ibfk_2")
+
+  @@index([atividade_tipo_id], map: "atividade_tipo_id")
+  @@index([requisito_id], map: "requisito_id")
+}
+
+model atividadesiee {
+  id   Int     @id @default(autoincrement())
+  nome String? @db.VarChar(255)
+}
+
+model cadidatos_documentos_enviados {
+  candidato_documento_enviado_id Int                    @id @default(autoincrement())
+  candidato_id                   Int
+  requisito_candidatura_id       Int
+  arquivo_titulo                 String?                @db.VarChar(11)
+  arquivo                        String?                @db.VarChar(255)
+  data                           DateTime?              @db.Timestamp(0)
+  candidatos                     candidatos             @relation(fields: [candidato_id], references: [candidato_id], onUpdate: Restrict, map: "cadidatos_documentos_enviados_fk")
+  requisitos_candidatura         requisitos_candidatura @relation(fields: [requisito_candidatura_id], references: [requisito_candidatura_id], onUpdate: Restrict, map: "cadidatos_documentos_enviados_fk2")
+
+  @@index([candidato_id], map: "candidato_id")
+  @@index([requisito_candidatura_id], map: "requisito_candidatura_id")
+}
+
+model candidatos {
+  candidato_id                      Int                                 @id @unique(map: "candidato_id") @default(autoincrement())
+  capitulo_id                       Int?
+  nome                              String?                             @db.VarChar(100)
+  email                             String?                             @db.VarChar(100)
+  data                              DateTime?                           @db.Date
+  indicado_nome                     String?                             @db.VarChar(100)
+  observacoes                       String?                             @db.Text
+  status                            Int?                                @default(0)
+  nivel_curso_1                     Int?                                @db.UnsignedInt
+  nome_curso_1                      String?                             @db.VarChar(255)
+  status_curso_1                    Int?                                @db.UnsignedInt
+  nome_instituicao_1                String?                             @db.VarChar(255)
+  nome_empresa                      String?                             @db.VarChar(255)
+  cnpj_empresa                      String?                             @db.VarChar(20)
+  cidade_curso_1                    String?                             @db.VarChar(100)
+  data_nascimento                   DateTime?                           @db.Date
+  capitulos                         capitulos?                          @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Restrict, onUpdate: Restrict, map: "candidatos_ibfk_1")
+  cadidatos_documentos_enviados     cadidatos_documentos_enviados[]
+  candidatos_requisitos_candidatura candidatos_requisitos_candidatura[]
+
+  @@index([capitulo_id], map: "capitulo_id")
+}
+
+model candidatos_requisitos_candidatura {
+  candidatos_requisitos_candidatura_id Int                    @id @default(autoincrement())
+  requisito_candidatura_id             Int
+  candidato_id                         Int
+  data                                 DateTime?              @db.Timestamp(0)
+  status                               Int?                   @default(0)
+  candidatos                           candidatos             @relation(fields: [candidato_id], references: [candidato_id], onDelete: Cascade, map: "candidatos_requisitos_candidatura_fk1")
+  requisitos_candidatura               requisitos_candidatura @relation(fields: [requisito_candidatura_id], references: [requisito_candidatura_id], onUpdate: Restrict, map: "candidatos_requisitos_candidatura_fk")
+
+  @@index([candidato_id], map: "candidato_id")
+  @@index([requisito_candidatura_id], map: "requisito_candidatura_id")
+}
+
+model candidatos_status {
+  candidato_status_id Int     @id @default(autoincrement())
+  nome                String? @db.VarChar(45)
+}
+
+model capitulos {
+  capitulo_id              Int                        @id @unique(map: "capitulo_id") @default(autoincrement())
+  data_inicial             DateTime?                  @db.Date
+  data_final               DateTime?                  @db.Date
+  vigente                  Int?                       @default(1)
+  nome                     String?                    @db.VarChar(100)
+  codigo                   String?                    @db.Char(10)
+  habilitar_ranking        Int?
+  is_principal             Int?
+  associados               associados[]
+  atividades_tipos         atividades_tipos[]
+  atividades_tipos_copy    atividades_tipos_copy[]
+  candidatos               candidatos[]
+  comunicados              comunicados[]
+  eventos_tipos            eventos_tipos[]
+  eventos_tipos_copy       eventos_tipos_copy[]
+  grupos_formacao          grupos_formacao[]
+  usuarios_administradores usuarios_administradores[]
+}
+
+model cidades {
+  cidade_id                                                    Int          @id @unique(map: "cidade_id") @default(autoincrement())
+  nome                                                         String       @db.VarChar(45)
+  estado_id                                                    Int
+  associados_associados_end_correspondencia_cidade_idTocidades associados[] @relation("associados_end_correspondencia_cidade_idTocidades")
+  associados_associados_end_residencial_cidade_idTocidades     associados[] @relation("associados_end_residencial_cidade_idTocidades")
+
+  @@index([estado_id], map: "fk_cidade_estado")
+}
+
+model comentarios_evento {
+  comentario_id  Int       @id @default(autoincrement())
+  evento_id      Int?
+  associado_id   Int?
+  comentario     String    @db.Text
+  arquivo        String?   @db.VarChar(255)
+  arquivo_titulo String?   @db.VarChar(255)
+  data           DateTime? @default(now()) @db.Timestamp(0)
+  status         String?   @db.Char(1)
+  enviado        String?   @db.Char(1)
+
+  @@index([associado_id], map: "fk_comentarios_associado")
+  @@index([evento_id], map: "fk_comentarios_evento")
+}
+
+model comunicados {
+  comunicado_id Int           @id @default(autoincrement())
+  capitulo_id   Int?
+  fase_grupo_id Int?
+  titulo        String?       @db.VarChar(255)
+  mensagem      String?       @db.Text
+  data          DateTime?     @db.Date
+  data_envio    DateTime?     @db.Date
+  capitulos     capitulos?    @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Cascade, map: "comunicados_ibfk_2")
+  fases_grupos  fases_grupos? @relation(fields: [fase_grupo_id], references: [fase_grupo_id], onDelete: Cascade, map: "comunicados_ibfk_1")
+
+  @@index([capitulo_id], map: "capitulo_id")
+  @@index([fase_grupo_id], map: "fase_grupo_id")
+}
+
+model config {
+  id     Int       @id @default(autoincrement())
+  nome   String?   @db.VarChar(255)
+  tipo   String?   @db.VarChar(15)
+  valor  String?   @db.Text
+  dtaalt DateTime? @db.DateTime(0)
+}
+
+model contatos_grupos_email {
+  contato_id     Int           @id @default(autoincrement())
+  grupo_email_id Int?
+  nome           String?       @db.VarChar(100)
+  email          String?       @db.VarChar(255)
+  capitulo       Int?
+  conjuge        String?       @db.VarChar(100)
+  associado_id   Int?
+  associados     associados?   @relation(fields: [associado_id], references: [associado_id], onDelete: Restrict, map: "contatos_grupos_email_ibfk_2")
+  grupos_email   grupos_email? @relation(fields: [grupo_email_id], references: [grupo_email_id], onDelete: Restrict, map: "contatos_grupos_email_ibfk_1")
+
+  @@index([associado_id], map: "associado_id")
+  @@index([grupo_email_id], map: "fk_contatos_grupos_grupo_email")
+}
+
+model contatos_grupos_email_copy {
+  contato_id     Int           @id @default(autoincrement())
+  grupo_email_id Int?
+  nome           String?       @db.VarChar(100)
+  email          String?       @db.VarChar(255)
+  capitulo       Int?
+  conjuge        String?       @db.VarChar(100)
+  grupos_email   grupos_email? @relation(fields: [grupo_email_id], references: [grupo_email_id], onDelete: NoAction, onUpdate: NoAction, map: "contatos_grupos_email_copy_ibfk_1")
+
+  @@index([grupo_email_id], map: "fk_contatos_grupos_grupo_email")
+}
+
+model conteudos_site {
+  conteudo_id Int                         @id @default(autoincrement())
+  titulo      String?                     @db.VarChar(100)
+  texto       String?                     @db.Text
+  localizacao conteudos_site_localizacao?
+}
+
+model cursos {
+  id          Int       @id @default(autoincrement())
+  titulo      String?   @db.VarChar(255)
+  autor       String?   @db.VarChar(255)
+  areacon_id  Int?
+  fase_id     Int?
+  plataforma  String?   @db.VarChar(255)
+  tempo       DateTime? @db.Time(0)
+  dtains      DateTime? @db.DateTime(0)
+  dtaalt      DateTime? @db.DateTime(0)
+  usuarios_id Int?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model debug {
+  data String? @db.Text
+
+  @@ignore
+}
+
+model emails {
+  email_id       Int           @id @unique(map: "email_id") @default(autoincrement())
+  grupo_email_id Int?
+  template_id    Int?
+  titulo         String?       @db.VarChar(45)
+  conteudo       String?       @db.Text
+  data           DateTime?     @db.Date
+  data_envio     DateTime?     @db.Date
+  grupos_email   grupos_email? @relation(fields: [grupo_email_id], references: [grupo_email_id], onDelete: Cascade, map: "fk_grupos")
+  templates      templates?    @relation(fields: [template_id], references: [template_id], onDelete: Cascade, map: "fk_template")
+
+  @@index([grupo_email_id], map: "fk_grupos")
+  @@index([template_id], map: "fk_template")
+}
+
+model entregas {
+  id             Int       @id @default(autoincrement())
+  associado_id   Int?      @default(1) @db.UnsignedInt
+  livro_id       Int?      @db.UnsignedInt
+  coordenador_id Int?
+  situacao       Int       @default(0)
+  pontos         Int       @default(0)
+  observacao     String?   @db.Text
+  resenha        String?   @db.LongText
+  arquivo        String?   @db.VarChar(255)
+  dtains         DateTime? @db.DateTime(0)
+  dtaalt         DateTime? @db.DateTime(0)
+  dtarev         DateTime? @db.DateTime(0)
+}
+
+model estados {
+  estado_id Int     @id
+  sigla     String? @db.VarChar(2)
+  estado    String? @db.VarChar(25)
+  nome      String? @db.VarChar(25)
+}
+
+model estados_civis {
+  estado_civil_id Int          @id @default(autoincrement()) @db.UnsignedInt
+  titulo          String       @db.VarChar(20)
+  ordering        Int
+  associados      associados[]
+}
+
+model eventos {
+  evento_id                           Int                   @id @unique(map: "evento_id") @default(autoincrement())
+  evento_tipo_id                      Int                   @db.UnsignedInt
+  evento_palestrante_id               Int?                  @db.UnsignedInt
+  associado_id                        Int?
+  fase_grupo_id                       Int?
+  relator_outro                       Int?
+  is_ordinario                        Int?                  @default(1)
+  titulo                              String?               @db.VarChar(255)
+  local                               String?               @db.VarChar(255)
+  data                                DateTime?             @db.Date
+  hora                                String?               @db.VarChar(255)
+  pauta                               String?               @db.Text
+  indice_1                            String?               @db.VarChar(255)
+  indice_1_nota                       Float?                @db.Float
+  indice_2                            String?               @db.VarChar(255)
+  indice_2_nota                       Float?                @db.Float
+  indice_3                            String?               @db.VarChar(255)
+  indice_3_nota                       Float?                @db.Float
+  indice_4                            String?               @db.VarChar(255)
+  indice_4_nota                       Float?                @db.Float
+  indice_5                            String?               @db.VarChar(255)
+  indice_5_nota                       Float?                @db.Float
+  avaliacao_votantes                  Int?                  @db.UnsignedInt
+  avaliacao_observacao                String?               @db.VarChar(255)
+  relatorio_relator_arquivo           String?               @db.VarChar(255)
+  relatorio_relator_arquivo_descricao String?               @db.VarChar(255)
+  relatorio_relator                   String?               @db.Text
+  arquivo_apresentacao                String?               @db.VarChar(50)
+  associados                          associados?           @relation(fields: [associado_id], references: [associado_id], onDelete: NoAction, onUpdate: NoAction, map: "eventos_ibfk_3")
+  eventos_palestrantes                eventos_palestrantes? @relation(fields: [evento_palestrante_id], references: [evento_palestrante_id], onDelete: NoAction, onUpdate: NoAction, map: "eventos_ibfk_2")
+  eventos_tipos                       eventos_tipos         @relation(fields: [evento_tipo_id], references: [evento_tipo_id], onUpdate: Restrict, map: "eventos_ibfk_1")
+  fases_grupos                        fases_grupos?         @relation(fields: [fase_grupo_id], references: [fase_grupo_id], onDelete: NoAction, onUpdate: NoAction, map: "eventos_ibfk_4")
+  associados_eventos                  associados_eventos[]
+  galeria                             galeria[]
+  grupos_formacao                     grupos_formacao[]
+
+  @@index([associado_id], map: "associado_id")
+  @@index([data], map: "data")
+  @@index([evento_tipo_id], map: "evento_tipo_id")
+  @@index([fase_grupo_id], map: "fase_grupo_id")
+  @@index([evento_palestrante_id], map: "palestrante_id")
+}
+
+model eventos_copy {
+  evento_id                           Int       @id @unique(map: "evento_id") @default(autoincrement())
+  evento_tipo_id                      Int       @db.UnsignedInt
+  evento_palestrante_id               Int?      @db.UnsignedInt
+  associado_id                        Int?
+  fase_grupo_id                       Int?
+  relator_outro                       Int?
+  is_ordinario                        Int?      @default(1)
+  titulo                              String?   @db.VarChar(255)
+  local                               String?   @db.VarChar(255)
+  data                                DateTime? @db.Date
+  hora                                String?   @db.VarChar(255)
+  pauta                               String?   @db.Text
+  indice_1                            String?   @db.VarChar(255)
+  indice_1_nota                       Float?    @db.Float
+  indice_2                            String?   @db.VarChar(255)
+  indice_2_nota                       Float?    @db.Float
+  indice_3                            String?   @db.VarChar(255)
+  indice_3_nota                       Float?    @db.Float
+  indice_4                            String?   @db.VarChar(255)
+  indice_4_nota                       Float?    @db.Float
+  indice_5                            String?   @db.VarChar(255)
+  indice_5_nota                       Float?    @db.Float
+  avaliacao_votantes                  Int?      @db.UnsignedInt
+  avaliacao_observacao                String?   @db.VarChar(255)
+  relatorio_relator_arquivo           String?   @db.VarChar(255)
+  relatorio_relator_arquivo_descricao String?   @db.VarChar(255)
+  relatorio_relator                   String?   @db.Text
+  arquivo_apresentacao                String?   @db.VarChar(50)
+
+  @@index([associado_id], map: "associado_id")
+  @@index([data], map: "data")
+  @@index([evento_tipo_id], map: "evento_tipo_id")
+  @@index([fase_grupo_id], map: "fase_grupo_id")
+  @@index([evento_palestrante_id], map: "palestrante_id")
+}
+
+model eventos_grupos {
+  evento_grupo_id    Int                  @id @unique(map: "evento_grupo_id") @default(autoincrement())
+  titulo             String?              @db.VarChar(255)
+  tipo               Int?                 @default(1)
+  data               DateTime             @default(now()) @db.Timestamp(0)
+  eventos_tipos      eventos_tipos[]
+  eventos_tipos_copy eventos_tipos_copy[]
+}
+
+model eventos_palestrantes {
+  evento_palestrante_id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome                               String?   @db.VarChar(1024)
+  cargo                              String?   @db.VarChar(100)
+  tratamento                         Int?      @db.UnsignedInt
+  data_nascimento                    DateTime? @db.Date
+  naturalidade                       String?   @db.VarChar(100)
+  foto                               String?   @db.VarChar(45)
+  estado_civil                       Int?      @db.UnsignedInt
+  profissional_estado                String?   @db.Char(2)
+  residencial_estado                 String?   @db.Char(2)
+  residencial_logradouro             String?   @db.VarChar(255)
+  residencial_numero                 String?   @db.VarChar(11)
+  residencial_complemento            String?   @db.VarChar(10)
+  residencial_bairro                 String?   @db.VarChar(50)
+  residencial_cep                    String?   @db.VarChar(12)
+  residencial_id_cidade              Int?
+  residencial_telefone               String?   @db.VarChar(20)
+  residencial_telefone_observacoes   String?   @db.VarChar(11)
+  residencial_celular                String?   @db.VarChar(20)
+  residencial_celular_observacoes    String?   @db.VarChar(20)
+  residencial_email                  String?   @db.VarChar(255)
+  residencial_email_observacoes      String?   @db.VarChar(20)
+  profissional_logradouro            String?   @db.VarChar(255)
+  profissional_numero                String?   @db.VarChar(11)
+  profissional_complemento           String?   @db.VarChar(100)
+  profissional_bairro                String?   @db.VarChar(45)
+  profissional_cep                   String?   @db.VarChar(12)
+  profissional_id_cidade             Int?
+  profissional_assistente            String?   @db.VarChar(100)
+  profissional_comercial             String?   @db.VarChar(20)
+  profissional_comercial_observacoes String?   @db.VarChar(20)
+  profissional_fax                   String?   @db.VarChar(20)
+  profissional_fax_observacoes       String?   @db.VarChar(11)
+  comunicador_msn                    String?   @db.VarChar(50)
+  comunicador_skype                  String?   @db.VarChar(50)
+  comunicador_outros                 String?   @db.VarChar(50)
+  midia_social_linkedin              String?   @db.VarChar(50)
+  midia_social_blog                  String?   @db.VarChar(50)
+  midia_social_outros                String?   @db.VarChar(50)
+  informacoes                        String?   @db.Text
+  data                               DateTime  @default(now()) @db.Timestamp(0)
+  data_alteracao                     DateTime  @default(dbgenerated("0000-00-00 00:00:00")) @db.Timestamp(0)
+  curriculo                          String?   @db.Text
+  eventos                            eventos[]
+}
+
+model eventos_palestrantes_eventos {
+  evento_palestrante_evento_id Int  @id @default(autoincrement())
+  evento_id                    Int?
+  evento_palestrante_id        Int?
+}
+
+model eventos_tipos {
+  evento_tipo_id  Int            @id @unique(map: "evento_tipo_id") @default(autoincrement()) @db.UnsignedInt
+  evento_grupo_id Int
+  capitulo_id     Int?
+  titulo          String         @db.VarChar(45)
+  carga_horaria   DateTime?      @db.Time(0)
+  pontos          Int?
+  data            DateTime       @default(now()) @db.Timestamp(0)
+  capitulos       capitulos?     @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Restrict, onUpdate: Restrict, map: "eventos_tipos_ibfk_1")
+  eventos_grupos  eventos_grupos @relation(fields: [evento_grupo_id], references: [evento_grupo_id], onUpdate: Restrict, map: "eventos_tipos_fk")
+  eventos         eventos[]
+
+  @@index([capitulo_id], map: "capitulo_id")
+  @@index([evento_grupo_id], map: "fk_tipos_eventos_grupos")
+}
+
+model eventos_tipos_copy {
+  evento_tipo_id  Int            @id @unique(map: "evento_tipo_id") @default(autoincrement()) @db.UnsignedInt
+  evento_grupo_id Int
+  capitulo_id     Int?
+  titulo          String         @db.VarChar(45)
+  carga_horaria   DateTime?      @db.Time(0)
+  pontos          Int?
+  data            DateTime       @default(now()) @db.Timestamp(0)
+  capitulos       capitulos?     @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Restrict, onUpdate: Restrict, map: "eventos_tipos_copy_ibfk_2")
+  eventos_grupos  eventos_grupos @relation(fields: [evento_grupo_id], references: [evento_grupo_id], onUpdate: Restrict, map: "eventos_tipos_copy_ibfk_1")
+
+  @@index([capitulo_id], map: "capitulo_id")
+  @@index([evento_grupo_id], map: "fk_tipos_eventos_grupos")
+}
+
+model eventos_tipos_requisitos {
+  evento_tipo_requisito_id Int      @id @default(autoincrement()) @db.UnsignedInt
+  evento_tipo_id           Int      @db.UnsignedInt
+  requisito_id             Int      @db.UnsignedInt
+  data                     DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([evento_tipo_id], map: "evento_tipo_id")
+  @@index([requisito_id], map: "requisito_id")
+}
+
+model fase {
+  fase_id            Int                  @id @unique(map: "fk_id") @default(autoincrement()) @db.UnsignedInt
+  fase_grupo_id      Int
+  titulo             String               @db.VarChar(255)
+  ordering           Int?                 @db.UnsignedInt
+  campo_data         String?              @db.VarChar(20)
+  mudanca_fase       Int?
+  fases_grupos       fases_grupos         @relation(fields: [fase_grupo_id], references: [fase_grupo_id], onUpdate: Restrict, map: "fase_ibfk_1")
+  associados         associados[]
+  associados_eventos associados_eventos[]
+
+  @@index([fase_grupo_id], map: "fk_rel_id")
+}
+
+model fases_grupos {
+  fase_grupo_id    Int                @id @unique(map: "fase_grupo_id") @default(autoincrement())
+  nome             String             @db.VarChar(255)
+  nome_pequeno     String?            @db.VarChar(20)
+  ordering         Int?               @db.UnsignedInt
+  comunicados      comunicados[]
+  eventos          eventos[]
+  fase             fase[]
+  sugestoes_livros sugestoes_livros[]
+}
+
+model filtros {
+  id       Int       @id @default(autoincrement()) @db.UnsignedInt
+  menu_id  Int?      @db.UnsignedInt
+  nome     String?   @db.VarChar(255)
+  condicao String?   @db.VarChar(255)
+  ativo    String?   @db.Char(1)
+  dtains   DateTime? @db.DateTime(0)
+  dtaalt   DateTime? @db.DateTime(0)
+  menus    menus?    @relation(fields: [menu_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_filtros_menus")
+
+  @@index([menu_id], map: "FK_filtros_menus")
+}
+
+model formacoes_niveis {
+  formacao_nivel_id Int    @id @default(autoincrement()) @db.UnsignedInt
+  titulo            String @db.VarChar(20)
+}
+
+model formacoes_status {
+  formacao_status_id Int    @id @default(autoincrement()) @db.UnsignedInt
+  titulo             String @db.VarChar(20)
+}
+
+model galeria {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  galeria_id Int?
+  foto       String?  @db.VarChar(255)
+  thumb      String?  @db.VarChar(255)
+  eventos    eventos? @relation(fields: [galeria_id], references: [evento_id], onDelete: Restrict, onUpdate: Restrict, map: "galeria_ibfk_1")
+
+  @@index([galeria_id], map: "galeria_id")
+}
+
+model galeriasfotos {
+  id          Int          @id @default(autoincrement()) @db.UnsignedInt
+  usuarios_id Int?         @db.UnsignedInt
+  galerias_id Int?         @db.UnsignedInt
+  rel_id      Int?         @db.UnsignedInt
+  descr       String?      @db.VarChar(255)
+  arquivo     String?      @db.VarChar(255)
+  tipo        String?      @db.Char(1)
+  dtains      DateTime?    @db.DateTime(0)
+  dtaalt      DateTime?    @db.DateTime(0)
+  galeriasrel galeriasrel? @relation(fields: [rel_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_galeriasfotos_galeriasrel")
+  usuarios    usuarios?    @relation(fields: [usuarios_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "FK_galeriasfotos_usuarios")
+
+  @@index([galerias_id], map: "FK_galeriasfotos_galerias")
+  @@index([rel_id], map: "FK_galeriasfotos_galeriasrel")
+  @@index([usuarios_id], map: "FK_galeriasfotos_usuarios")
+}
+
+model galeriasrel {
+  id            Int             @id @default(autoincrement()) @db.UnsignedInt
+  nome          String?         @db.VarChar(255)
+  tabela        String?         @db.VarChar(255)
+  area          String?         @db.VarChar(255)
+  tipo          String?         @db.VarChar(255)
+  galeriasfotos galeriasfotos[]
+}
+
+model gestoes {
+  gestao_id                        Int               @id @unique(map: "gestao_id") @default(autoincrement())
+  capitulo_id                      Int?
+  bienio                           String?           @db.VarChar(255)
+  data_inicio                      DateTime?         @db.Date
+  data_fim                         DateTime?         @db.Date
+  foto                             String?           @db.VarChar(255)
+  presidente_id                    Int?
+  presidente                       String?           @db.VarChar(255)
+  vice_id                          Int?
+  vice_presidente                  String?           @db.VarChar(255)
+  formacao_id                      Int?
+  diretor_formacao                 String?           @db.VarChar(255)
+  comunicacao_id                   Int?
+  diretor_comunicacao              String?           @db.VarChar(255)
+  financeiro_id                    Int?
+  diretor_financeiro               String?           @db.VarChar(255)
+  eventos_id                       Int?
+  diretor_eventos                  String?           @db.VarChar(255)
+  fiscal1_id                       Int?
+  conselho_fiscal_1                String?           @db.VarChar(255)
+  fiscal2_id                       Int?
+  conselho_fiscal_2                String?           @db.VarChar(255)
+  fiscal3_id                       Int?
+  conselho_fiscal_3                String?           @db.VarChar(255)
+  fiscals_id                       Int?
+  conselho_fiscal_suplente         String?           @db.VarChar(255)
+  deliberativop_id                 Int?
+  conselho_deliberativo_presidente String?           @db.VarChar(255)
+  deliberativo1_id                 Int?
+  conselho_deliberativo_1          String?           @db.VarChar(255)
+  deliberativo2_id                 Int?
+  conselho_deliberativo_2          String?           @db.VarChar(255)
+  deliberativo3_id                 Int?
+  conselho_deliberativo_3          String?           @db.VarChar(255)
+  deliberativo4_id                 Int?
+  conselho_deliberativo_4          String?           @db.VarChar(255)
+  deliberativo5_id                 Int?
+  conselho_deliberativo_5          String?           @db.VarChar(255)
+  deliberativo6_id                 Int?
+  conselho_deliberativo_6          String?           @db.VarChar(255)
+  deliberativo7_id                 Int?
+  conselho_deliberativo_7          String?           @db.VarChar(255)
+  forumlib_id                      Int?
+  diretor_forum_liberdade          String?           @db.VarChar(255)
+  habilitar_ata                    Int?              @default(0) @db.UnsignedInt
+  habilitar_premios                Int?              @default(1) @db.UnsignedInt
+  frequencia_minima                Decimal?          @db.Decimal(10, 5)
+  grupos_formacao                  grupos_formacao[]
+
+  @@index([data_fim], map: "data_fim")
+  @@index([data_inicio], map: "data_inicio")
+}
+
+model grupos_email {
+  grupo_email_id             Int                          @id @unique(map: "grupo_email_id") @default(autoincrement())
+  nome                       String?                      @db.VarChar(100)
+  data                       DateTime?                    @db.Date
+  contatos_grupos_email      contatos_grupos_email[]
+  contatos_grupos_email_copy contatos_grupos_email_copy[]
+  emails                     emails[]
+}
+
+model grupos_formacao {
+  grupo_formacao_id                                     Int                          @id @unique(map: "grupo_formacao_id") @default(autoincrement()) @db.UnsignedInt
+  gestao_id                                             Int?
+  capitulo_id                                           Int?
+  associado_id                                          Int?
+  coordenador_id                                        Int?
+  evento_id                                             Int?
+  nome                                                  String?                      @db.VarChar(100)
+  data                                                  DateTime?                    @db.Date
+  associados_associadosTogrupos_formacao_associado_id   associados?                  @relation("associadosTogrupos_formacao_associado_id", fields: [associado_id], references: [associado_id], onDelete: Restrict, onUpdate: Restrict, map: "grupos_formacao_ibfk_3")
+  capitulos                                             capitulos?                   @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: Restrict, onUpdate: Restrict, map: "grupos_formacao_ibfk_2")
+  associados_associadosTogrupos_formacao_coordenador_id associados?                  @relation("associadosTogrupos_formacao_coordenador_id", fields: [coordenador_id], references: [associado_id], onDelete: Restrict, onUpdate: Restrict, map: "FK_grupos_formacao_associados")
+  eventos                                               eventos?                     @relation(fields: [evento_id], references: [evento_id], onDelete: Restrict, onUpdate: Restrict, map: "grupos_formacao_ibfk_4")
+  gestoes                                               gestoes?                     @relation(fields: [gestao_id], references: [gestao_id], onDelete: Restrict, onUpdate: Restrict, map: "grupos_formacao_ibfk_1")
+  grupos_formacao_associados                            grupos_formacao_associados[]
+
+  @@index([coordenador_id], map: "FK_grupos_formacao_associados")
+  @@index([associado_id], map: "associado_id")
+  @@index([capitulo_id], map: "capitulo_id")
+  @@index([evento_id], map: "evento_id")
+  @@index([gestao_id], map: "gestao_id")
+}
+
+model grupos_formacao_associados {
+  grupo_formacao_associado_id Int             @id @default(autoincrement()) @db.UnsignedInt
+  grupo_formacao_id           Int             @db.UnsignedInt
+  associado_id                Int
+  status                      Int
+  dtaingresso                 DateTime        @db.Date
+  dtasaida                    DateTime        @db.Date
+  associados                  associados      @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "grupos_formacao_associados_ibfk_1")
+  grupos_formacao             grupos_formacao @relation(fields: [grupo_formacao_id], references: [grupo_formacao_id], onDelete: Cascade, map: "grupos_formacao_associados_ibfk_2")
+
+  @@index([associado_id], map: "associado_id")
+  @@index([grupo_formacao_id], map: "grupo_formacao_id")
+}
+
+model grupos_formacao_bonificacao {
+  grupo_formacao_bonificacao_id Int      @id @default(autoincrement()) @db.UnsignedInt
+  grupo_formacao_id             Int      @db.UnsignedInt
+  descricao                     String   @db.VarChar(255)
+  pontos                        Int      @db.UnsignedInt
+  data                          DateTime @default(now()) @db.Timestamp(0)
+}
+
+model importa_tipos {
+  id              Int    @id @default(autoincrement())
+  atividade_atual Int
+  nome            String @db.VarChar(255)
+  pontos          Int
+  atividade_real  Int
+}
+
+model importalivro {
+  id      Int     @id @default(autoincrement())
+  titulo  String? @db.VarChar(255)
+  fase    String? @db.VarChar(255)
+  numpag  String? @db.VarChar(255)
+  areacon String? @db.VarChar(255)
+  tipo    String? @db.VarChar(255)
+}
+
+model instituicoes {
+  id   Int     @id @default(autoincrement())
+  nome String? @db.VarChar(255)
+}
+
+model investidores {
+  investidor_id      Int                 @id @default(autoincrement())
+  nome               String?             @db.VarChar(255)
+  tipo               Int?
+  logo               String?             @db.VarChar(255)
+  texto              String?             @db.Text
+  logo_rodape        String?             @db.VarChar(255)
+  ativo              String?             @db.Char(1)
+  tipos_investidores tipos_investidores? @relation(fields: [tipo], references: [tipo_investidor_id], onDelete: Restrict, onUpdate: Restrict, map: "fk_investidores_tipo")
+
+  @@index([tipo], map: "fk_investidores_tipo")
+}
+
+model livros {
+  sugestao_livro_id Int       @id @default(autoincrement())
+  fase_grupo_id     Int?      @db.UnsignedInt
+  titulo            String?   @db.VarChar(255)
+  autor             String?   @db.VarChar(255)
+  numpag            Int?      @db.UnsignedInt
+  areacon           String?   @db.VarChar(255)
+  areacon_id        Int?      @db.UnsignedInt
+  tipo              Int?      @db.UnsignedInt
+  dtains            DateTime? @db.DateTime(0)
+  dtaalt            DateTime? @db.DateTime(0)
+  usuarios_id       Int?
+}
+
+model logacessos {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  tipo        String    @default("") @db.Char(1)
+  usuarios_id Int?      @db.UnsignedInt
+  dtahora     DateTime? @db.DateTime(0)
+
+  @@index([usuarios_id], map: "usuarios_id")
+}
+
+model materiais {
+  material_id               Int                        @id @unique(map: "material_id") @default(autoincrement())
+  associado_id              Int
+  atividade_id              Int?
+  requisito_id              Int?
+  titulo                    String?                    @db.VarChar(255)
+  arquivo_titulo            String?                    @db.VarChar(255)
+  arquivo                   String                     @db.VarChar(255)
+  data_envio                DateTime                   @default(now()) @db.Timestamp(0)
+  status                    Int?
+  tipo                      Int
+  associados                associados                 @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "materiais_ibfk_1")
+  atividades_semmoficicacao atividades_semmoficicacao? @relation(fields: [atividade_id], references: [atividade_id], onDelete: Cascade, map: "materiais_ibfk_2")
+  status_materiais          status_materiais?          @relation(fields: [status], references: [status_material_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_materiais_status")
+
+  @@index([status], map: "fk_materiais_status")
+  @@index([associado_id], map: "materiais_ibfk_1")
+  @@index([atividade_id], map: "materiais_ibfk_2")
+  @@index([requisito_id], map: "requisito_id")
+}
+
+model mensagens {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  remetente_id Int?      @db.UnsignedInt
+  destino_id   Int?      @db.UnsignedInt
+  assunto      String?   @db.VarChar(255)
+  texto        String?   @db.Text
+  lida         String?   @default("0") @db.Char(1)
+  dtains       DateTime? @db.DateTime(0)
+}
+
+model menus {
+  id             Int              @id @default(autoincrement()) @db.UnsignedInt
+  grupo          Int?             @db.UnsignedInt
+  sublevel       Int?             @db.UnsignedInt
+  ordering       Int?             @db.UnsignedInt
+  descr          String?          @db.VarChar(255)
+  url            String?          @db.VarChar(255)
+  imagem         String?          @db.VarChar(255)
+  top            String?          @db.Char(1)
+  lef            String?          @db.Char(1)
+  ativo          String?          @db.Char(1)
+  ajuda          ajuda[]
+  filtros        filtros[]
+  usuariosniveis usuariosniveis[]
+}
+
+model modifica_eventos {
+  id             Int    @id @default(autoincrement())
+  evento_tipo_id Int    @default(0)
+  evento_id      Int    @default(0)
+  nome           String @db.VarChar(255)
+  pontos         Int    @default(0)
+}
+
+model mostraassociado {
+  id          Int     @id @default(autoincrement())
+  titulo      String? @db.VarChar(255)
+  campo       String? @db.VarChar(255)
+  tabelaref   String? @db.VarChar(255)
+  camporef    String? @db.VarChar(255)
+  where       String? @db.VarChar(255)
+  formatacao  String? @db.VarChar(255)
+  ordem       Int?
+  condicional Int     @default(0)
+}
+
+model ocorrencias {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  tipo_id      Int?      @db.UnsignedInt
+  associado_id Int?      @db.UnsignedInt
+  referente_id Int?
+  dta          DateTime? @db.Date
+  obs          String?   @db.Text
+  dtains       DateTime? @db.DateTime(0)
+  dtaalt       DateTime? @db.DateTime(0)
+
+  @@index([tipo_id], map: "FK_filtros_menus")
+}
+
+model ocorrencias_tipos {
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
+  nome   String? @db.VarChar(255)
+  tabela String? @db.VarChar(255)
+}
+
+model participacao {
+  id             Int       @id @default(autoincrement())
+  associado_id   Int?      @default(1) @db.UnsignedInt
+  curso_id       Int?      @db.UnsignedInt
+  coordenador_id Int?
+  situacao       Int       @default(0)
+  pontos         Int       @default(0)
+  observacao     String?   @db.MediumText
+  resenha        String?   @db.LongText
+  arquivo        String?   @db.VarChar(255)
+  dtains         DateTime? @db.DateTime(0)
+  dtaalt         DateTime? @db.DateTime(0)
+  dtarev         DateTime? @db.DateTime(0)
+}
+
+model penalidades {
+  penalidade_id Int        @id @unique(map: "penalidade_id") @default(autoincrement())
+  associado_id  Int
+  data          DateTime?  @db.Date
+  pontos        Int?
+  motivo        String?    @db.Text
+  aspn_gestao   String?    @db.VarChar(50)
+  associados    associados @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "penalidades_ibfk_1")
+
+  @@index([associado_id], map: "associado_id")
+}
+
+model premiados {
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  associado_id Int
+  grupo_id     Int
+  premio_id    Int      @db.UnsignedInt
+  status       Int?     @db.UnsignedInt
+  descr        String?  @db.Text
+  data         DateTime @db.Date
+  dtains       DateTime @db.DateTime(0)
+  dtaalt       DateTime @db.DateTime(0)
+  usuarios_id  Int
+}
+
+model premios {
+  premio_id          Int                  @id @unique(map: "premio_id") @default(autoincrement()) @db.UnsignedInt
+  titulo             String               @db.VarChar(255)
+  ordering           Int?                 @db.UnsignedInt
+  tipo               Int?                 @db.UnsignedInt
+  associados_premios associados_premios[]
+}
+
+model relatorio_relator {
+  relatorio_id Int       @id @default(autoincrement())
+  associado_id Int
+  evento_id    Int
+  comentario   String?   @db.Text
+  arquivo      String?   @db.VarChar(255)
+  data         DateTime? @db.Date
+
+  @@index([associado_id], map: "associado_id")
+  @@index([evento_id], map: "evento_id")
+}
+
+model requisitos {
+  requisito_id                Int                           @id @default(autoincrement())
+  requisito_tipo_id           Int?                          @default(0) @db.UnsignedInt
+  areacon_id                  Int?                          @default(0) @db.UnsignedInt
+  fase_id                     Int?                          @db.UnsignedInt
+  capitulo_id                 Int?
+  titulo                      String?                       @db.VarChar(255)
+  ordem                       Int?                          @db.UnsignedInt
+  pontuacao                   Int?                          @db.UnsignedInt
+  data_inicial                DateTime                      @db.Date
+  data_final                  DateTime?                     @db.Date
+  associados_requisitos       associados_requisitos[]
+  atividades_tipos_requisitos atividades_tipos_requisitos[]
+}
+
+model requisitos_candidatura {
+  requisito_candidatura_id          Int                                 @id @unique(map: "requisito_candidatura_id") @default(autoincrement())
+  descricao                         String?                             @db.VarChar(45)
+  cadidatos_documentos_enviados     cadidatos_documentos_enviados[]
+  candidatos_requisitos_candidatura candidatos_requisitos_candidatura[]
+}
+
+model requisitos_tipos {
+  requisito_tipo_id Int    @id @default(autoincrement())
+  titulo            String @db.VarChar(255)
+  is_obrigatorio    Int?   @default(1) @db.UnsignedInt
+  ordering          Int?   @db.UnsignedInt
+  is_automatico     Int?
+}
+
+model sistema_associado_erros {
+  sistema_associado_erro_id Int      @id @default(autoincrement()) @db.UnsignedInt
+  associado_id              Int
+  data                      DateTime @default(now()) @db.Timestamp(0)
+  retorno                   String?  @db.Text
+  enviado                   String?  @db.Text
+}
+
+model status {
+  status_id    Int        @id @unique(map: "associado_status_id") @default(autoincrement())
+  associado_id Int
+  valor_status Int
+  data         DateTime?  @db.Timestamp(0)
+  associados   associados @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade, map: "status_ibfk_1")
+
+  @@index([associado_id], map: "associado_id")
+}
+
+model status_materiais {
+  status_material_id Int         @id @default(autoincrement())
+  nome               String?     @db.VarChar(45)
+  materiais          materiais[]
+}
+
+model sugestoes_livros {
+  sugestao_livro_id Int           @id @default(autoincrement())
+  fase_grupo_id     Int?
+  titulo            String?       @db.VarChar(255)
+  numpag            Int?
+  autor             String?       @db.VarChar(255)
+  tipo              Int?
+  fases_grupos      fases_grupos? @relation(fields: [fase_grupo_id], references: [fase_grupo_id], onDelete: Cascade, map: "sugestoes_livros_ibfk_1")
+
+  @@index([fase_grupo_id], map: "fk_sugestoes_livros_fase")
+}
+
+model templates {
+  template_id Int       @id @unique(map: "template_id") @default(autoincrement())
+  evento_id   Int?
+  nome        String?   @db.VarChar(100)
+  conteudo    String?   @db.Text
+  data        DateTime? @db.Date
+  emails      emails[]
+}
+
+model tipos_investidores {
+  tipo_investidor_id Int            @id @unique(map: "tipo_investidor_id") @default(autoincrement())
+  nome               String?        @db.VarChar(45)
+  investidores       investidores[]
+}
+
+model usuarios {
+  id               Int             @id @default(autoincrement()) @db.UnsignedInt
+  usuariostipos_id Int?            @db.UnsignedInt
+  nome             String?         @db.VarChar(255)
+  login            String?         @db.VarChar(255)
+  senha            String?         @db.VarChar(255)
+  email            String?         @db.VarChar(255)
+  fone             String?         @db.VarChar(55)
+  cor              String?         @db.VarChar(15)
+  col              String?         @db.VarChar(10)
+  qtdreg           Int?            @db.UnsignedTinyInt
+  ajuda            String?         @db.Char(1)
+  apresentacao     String?         @db.Char(1)
+  ativo            String?         @db.Char(1)
+  dtains           DateTime?       @db.DateTime(0)
+  dtaalt           DateTime?       @db.DateTime(0)
+  usuariostipos    usuariostipos?  @relation(fields: [usuariostipos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_ibfk_1")
+  galeriasfotos    galeriasfotos[]
+
+  @@index([usuariostipos_id], map: "usuariostipos_id")
+}
+
+model usuarios_administradores {
+  usuario_id   Int        @id @unique(map: "usuario_id") @default(autoincrement())
+  capitulo_id  Int?
+  nome         String?    @db.VarChar(100)
+  senha        String?    @db.Text
+  perfil       Int?
+  data_criacao DateTime?  @db.Date
+  login        String?    @db.VarChar(45)
+  email        String?    @db.VarChar(150)
+  capitulos    capitulos? @relation(fields: [capitulo_id], references: [capitulo_id], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_administradores_ibfk_1")
+
+  @@index([capitulo_id], map: "capitulo_id")
+}
+
+model usuarios_erros {
+  usuario_erro_id Int       @id @default(autoincrement()) @db.UnsignedInt
+  login           String?   @db.VarChar(255)
+  senha           String?   @db.VarChar(255)
+  debug           String?   @db.Text
+  data            DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model usuariosniveis {
+  id               Int           @id @default(autoincrement()) @db.UnsignedInt
+  usuariostipos_id Int           @db.UnsignedInt
+  menus_id         Int?          @db.UnsignedInt
+  menus            menus?        @relation(fields: [menus_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuariosniveis_ibfk_1")
+  usuariostipos    usuariostipos @relation(fields: [usuariostipos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuariosniveis_ibfk_2")
+
+  @@index([menus_id], map: "menus_id")
+  @@index([usuariostipos_id], map: "usuariostipos_id")
+}
+
+model usuariostipos {
+  id             Int              @id @default(autoincrement()) @db.UnsignedInt
+  nome           String?          @db.VarChar(255)
+  usuarios       usuarios[]
+  usuariosniveis usuariosniveis[]
+}
+
+enum conteudos_site_localizacao {
+  instituicao
+  historia
+  missao
+  hexagono
+  insvestidores
+  premios
+  atuacao
+  participar
+  formacao
+  candidato
 }

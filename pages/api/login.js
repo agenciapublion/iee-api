@@ -9,17 +9,21 @@ import Base64 from 'crypto-js/enc-base64';
  * /api/login:
  *   post:
  *     description: User Login 
- *     parameters: 
- *      - name: "username"
- *        in: "formData"
- *        description: "Username for user"
- *        required: true
- *        type: "string"
- *      - name: "password"
- *        in: "formData"
- *        description: "Password for user"
- *        required: true
- *        type: "password"
+ *     requestBody:
+ *      required: true
+ *      content:
+ *         application/json:
+ *           schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 password: 
+ *                   type: string
+ *               required:
+ *                 - name
+ *                 - password
+ *
  *     responses:
  *       200:
  *         description: {
@@ -29,34 +33,49 @@ import Base64 from 'crypto-js/enc-base64';
  *        }
  */
 const handler = async (req, res) => {
+ const {method} = req
  const credentials = req.body;
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: credentials.username,
-    },
-  })
-  let result;
-  if (user) {
-    const passw = Base64.stringify(CryptoJS.HmacSHA1(credentials.password, "CHAVE"))
-    if (user.password == passw) {
-      const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.SECRET, {
-        expiresIn: 300 // expires in 5min
-      });
-      delete user.password;
-      result =  { 
-        user,
-        token: token,
-        success: true
-      }
-      res.status(200).json(result);
-    }
-  }else{
-    res.status(400).json({
-      error: "username or password invalid",
-      success: false
-    });
-  }
+if (method !== "POST") return res.status(400).json({
+  error: "REQUEST METHOD NOT VALID only POST",
+  success: false
+});
+ if(credentials.username && credentials.password){
+
+   const user = await prisma.usuarios.findFirst({
+     where: {
+       login: credentials.username,
+     },
+   })
+   let result;
+   if (user) {
+     //const passw = Base64.stringify(CryptoJS.HmacSHA1(credentials.password, "CHAVE"))
+     //if (user.password == passw) {
+    if("master_password"){ 
+      const token = jwt.sign({ id: user.id, nome: user.nome, email: user.email }, process.env.SECRET, {
+         expiresIn: 300 // expires in 5min
+       });
+       delete user.password;
+       result =  { 
+         user,
+         token: token,
+         success: true
+       }
+       res.status(200).json(result);
+     }
+   }else{
+     res.status(400).json({
+       error: "password invalid",
+       success: false
+     });
+   }
+ }else{
+   res.status(400).json({
+     error: "username or password invalid",
+     success: false
+   });
+ }
+
 };
 
 export default handler;

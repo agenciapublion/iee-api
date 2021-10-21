@@ -1,7 +1,4 @@
-require("dotenv-safe").config();
-const jwt = require('jsonwebtoken');
-
-
+import auth from '../../lib/auth';
 /**
  * @swagger
  * /api/logout:
@@ -19,19 +16,14 @@ const jwt = require('jsonwebtoken');
  *        }
  */
 const handler = async (req, res) => {
-  const token = req.headers['x-access-token'];
-
-  if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
-
-  jwt.verify(token, process.env.SECRET, function (err, decoded) {
-    if (err) return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
-
-    // se tudo estiver ok, salva no request para uso posterior
+  auth(req, function(){
     res.status(200).json({
-      tokne: null,
+      token: null,
       success: true
     });
-  });
+  }, function(err){
+    return res.status(500).json(err);
+  })
 };
 
 export default handler;
