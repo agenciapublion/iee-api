@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/portal_iee"
+  //url      = "mysql://root:password@localhost:3306/portal_iee"
+  url      = "mysql://portal_iee:2yJFLtwZ6aZxYcNt@bb8.be220.com:3306/portal_iee"
 }
 
 model afastamentos {
