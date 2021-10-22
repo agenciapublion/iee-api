@@ -28,8 +28,8 @@ const handler = async (req, res) => {
   });
   auth(req, async function () {
     const query = req.query;
-    const skip = query?.offset || 0;
-    const take = query?.limit || 20;
+    const skip = query?.offset ? parseInt(query.offset) : 0;
+    const take = query?.limit ? parseInt(query.limit) : 20;
     const events = await prisma.eventos.findMany({
       skip,
       take,
