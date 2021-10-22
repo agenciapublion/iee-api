@@ -77,14 +77,6 @@ model associados {
   senha                                                      String?                      @db.Text
   bloquear_ata                                               Int?
   associado_desde                                            DateTime?                    @db.Date
-  data_prospect                                              DateTime?                    @db.Date
-  data_efetivo_2                                             DateTime?                    @db.Date
-  data_efetivo_3                                             DateTime?                    @db.Date
-  data_efetivo_4                                             DateTime?                    @db.Date
-  data_honorario                                             DateTime?                    @db.Date
-  data_honorario_remido                                      DateTime?                    @db.Date
-  data_atualizacao                                           DateTime?                    @db.Date
-  dtaalt                                                     DateTime?                    @db.DateTime(0)
   nivel_curso_1                                              Int?
   nome_curso_1                                               String?                      @db.VarChar(255)
   status_curso_1                                             Int?
