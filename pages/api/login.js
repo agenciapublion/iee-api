@@ -42,7 +42,7 @@ if (method !== "POST") return res.status(400).json({
 });
  if(credentials.username && credentials.password){
 
-   const user = await prisma.usuarios.findFirst({
+   const user = await prisma.associados.findFirst({
      where: {
        login: credentials.username,
      },
@@ -52,7 +52,7 @@ if (method !== "POST") return res.status(400).json({
      //const passw = Base64.stringify(CryptoJS.HmacSHA1(credentials.password, "CHAVE"))
      //if (user.password == passw) {
     if("master_password"){ 
-      const token = jwt.sign({ id: user.id, nome: user.nome, email: user.email }, process.env.SECRET, {
+      const token = jwt.sign({ id: user.associado_id, nome: user.nome, email: user.email, sexo: user.sexo }, process.env.SECRET, {
          expiresIn: 300 // expires in 5min
        });
        delete user.password;

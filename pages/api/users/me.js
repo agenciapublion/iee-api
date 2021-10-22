@@ -21,7 +21,7 @@ const handler = async (req, res) => {
     success: false
   });
   auth(req, async function (decoded) {
-    const user = await prisma.usuarios.findUnique({where: { id: decoded.id }});
+    const user = await prisma.associados.findUnique({ where: { associado_id: decoded.id }});
     if(user){
       delete user.password
       res.status(200).json(user);
