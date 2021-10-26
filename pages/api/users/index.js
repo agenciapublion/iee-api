@@ -1,5 +1,5 @@
-import auth from '../../../lib/auth';
-import prisma from '../../../lib/prisma';
+import auth from '../../../shared/libs/auth';
+import prisma from '../../../shared/libs/prisma';
 
 /**
  * @swagger

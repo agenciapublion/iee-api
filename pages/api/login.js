@@ -1,7 +1,7 @@
 require("dotenv-safe").config();
 const jwt = require('jsonwebtoken');
 
-import prisma from '../../lib/prisma';
+import prisma from '../../shared/libs/prisma';
 import CryptoJS from "crypto-js";
 import Base64 from 'crypto-js/enc-base64';
 /**
