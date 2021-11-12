@@ -50,19 +50,12 @@ const handler = async (req, res) => {
     if (decoded.id) {
       const result = await prisma.comentarios_evento.create({
         data: {
-          associados: {
-            connect: {
-              associado_id: decoded.id
-            }
-          },
-          eventos: {
-            connect: {
-              evento_id: parseInt(event_id)
-            }
-          },
+          associado_id: decoded.id,
+          evento_id: parseInt(event_id),
           comentario: comment ? comment : "",
           arquivo: file ? file : "",
           arquivo_titulo: file_title ? file_title : "",
+          
         },
       })
       res.status(200).json(result);
