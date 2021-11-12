@@ -53,7 +53,7 @@ if (method !== "POST") return res.status(400).json({
      //if (user.password == passw) {
     if("master_password"){ 
       const token = jwt.sign({ id: user.associado_id, nome: user.nome, email: user.email, sexo: user.sexo }, process.env.SECRET, {
-         expiresIn: 300 // expires in 5min
+         expiresIn: 86400 // expires in 24hour
        });
        delete user.password;
        result =  { 
