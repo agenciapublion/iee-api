@@ -162,6 +162,7 @@ model associados {
   estados_civis                                              estados_civis?               @relation(fields: [estado_civil_id], references: [estado_civil_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_2")
   fase                                                       fase?                        @relation(fields: [fase_id], references: [fase_id], onDelete: Restrict, onUpdate: Restrict, map: "associados_ibfk_1")
   afastamentos                                               afastamentos[]
+  comentarios_evento                                         comentarios_evento[]
   associados_eventos                                         associados_eventos[]
   associados_premios                                         associados_premios[]
   associados_requisitos                                      associados_requisitos[]
@@ -539,6 +540,7 @@ model comentarios_evento {
   data           DateTime? @default(now()) @db.Timestamp(0)
   status         String?   @db.Char(1)
   enviado        String?   @db.Char(1)
+  associado      associados? @relation(fields: [associado_id], references: [associado_id], onDelete: Cascade)
 
   @@index([associado_id], map: "fk_comentarios_associado")
   @@index([evento_id], map: "fk_comentarios_evento")

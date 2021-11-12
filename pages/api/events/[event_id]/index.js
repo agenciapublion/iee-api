@@ -26,8 +26,12 @@ const handler = async (req, res) => {
   auth(req, async function () {
     const {event_id} = req.query;
     if(event_id){
-      const event = await prisma.eventos.findUnique({ where: { evento_id: parseInt(event_id) }});
-      res.status(200).json({ data: event });
+      const event = await prisma.eventos.findUnique({where: { evento_id: parseInt(event_id) }});
+      const comments = await prisma.comentarios_evento.findMany({ 
+        where: { evento_id: parseInt(event_id)}, 
+        include: {associado: true} 
+      });
+      res.status(200).json({ data: {event, comments} });
     }else{
       res.status(400).json({error: true, message: "event_id not found"});
     }
